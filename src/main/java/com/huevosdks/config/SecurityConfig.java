@@ -17,11 +17,14 @@ public class SecurityConfig {
 
     private final UsuarioDetailsService usuarioDetailsService;
     private final PasswordEncoder passwordEncoder;
+    private final RolSuccessHandler rolSuccessHandler;
 
     public SecurityConfig(UsuarioDetailsService usuarioDetailsService,
-                          PasswordEncoder passwordEncoder) {
+                          PasswordEncoder passwordEncoder,
+                          RolSuccessHandler rolSuccessHandler) {
         this.usuarioDetailsService = usuarioDetailsService;
         this.passwordEncoder = passwordEncoder;
+        this.rolSuccessHandler = rolSuccessHandler;
     }
 
     @Bean
@@ -42,16 +45,17 @@ public class SecurityConfig {
         http.authenticationManager(authenticationManager());
 
         http.authorizeHttpRequests(auth -> auth
-                .requestMatchers("/registro", "/login", "/css/**",
+                .requestMatchers("/registro", "/login", "/hash", "/css/**",
                         "/js/**", "/img/**", "/error/**").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .requestMatchers("/operador/**").hasRole("OPERADOR")
+                .requestMatchers("/catalogo/**").hasRole("CLIENTE")
                 .anyRequest().authenticated());
 
         http.formLogin(form -> form
                 .loginPage("/login")
                 .loginProcessingUrl("/login")
-                .defaultSuccessUrl("/dashboard", true)
+                .successHandler(rolSuccessHandler)
                 .failureUrl("/login?error=true")
                 .permitAll());
 
