@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Iniciar sesion | HUEVOS DKS</title>
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"/>
+    <style>
+        :root {
+            --dks-azul-oscuro: #1B3A6B;
+            --dks-azul-claro:  #4AB3E8;
+            --dks-amarillo:    #F5C842;
+            --dks-crema:       #F5F0E8;
+        }
+        body {
+            background-color: var(--dks-crema);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .card-login {
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(27,58,107,0.12);
+            max-width: 400px;
+            width: 100%;
+        }
+        .btn-login {
+            background-color: var(--dks-amarillo);
+            color: var(--dks-azul-oscuro);
+            font-weight: 700;
+            border: none;
+            width: 100%;
+            padding: 10px;
+        }
+        .btn-login:hover {
+            background-color: var(--dks-azul-claro);
+            color: white;
+        }
+        .logo-login {
+            height: 90px;
+            width: auto;
+            object-fit: contain;
+        }
+    </style>
+</head>
+<body>
+<div class="card card-login p-4">
+    <div class="text-center mb-3">
+        <img src="/img/logo-huevos-dks.png"
+             alt="HUEVOS DKS"
+             class="logo-login mb-2"/>
+        <h5 style="color: var(--dks-azul-oscuro); font-weight: 700;">
+            Iniciar sesion
+        </h5>
+    </div>
+
+    <!-- Mensaje de error -->
+    <div th:if="${param.error}" class="alert alert-danger py-2 text-center small">
+        Telefono o contrasena incorrectos
+    </div>
+
+    <!-- Mensaje de logout -->
+    <div th:if="${param.logout}" class="alert alert-success py-2 text-center small">
+        Has cerrado sesion correctamente
+    </div>
+
+    <form method="post" action="/login">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+        <div class="mb-3">
+            <label class="form-label small fw-semibold"
+                   style="color: var(--dks-azul-oscuro);">Telefono</label>
+            <input type="text" name="username" class="form-control"
+                   placeholder="Ej: 3001234567" required autofocus/>
+        </div>
+
+        <div class="mb-4">
+            <label class="form-label small fw-semibold"
+                   style="color: var(--dks-azul-oscuro);">Contrasena</label>
+            <input type="password" name="password" class="form-control"
+                   placeholder="Tu contrasena" required/>
+        </div>
+
+        <button type="submit" class="btn btn-login">Ingresar</button>
+    </form>
+
+    <div class="text-center mt-3">
+        <a href="/registro" class="small" style="color: var(--dks-azul-claro);">
+            ¿No tienes cuenta? Registrate
+        </a>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
