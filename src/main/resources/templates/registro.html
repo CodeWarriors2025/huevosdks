@@ -89,7 +89,6 @@
     </div>
 
     <form th:action="@{/registro}" th:object="${registroDTO}" method="post">
-        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
 
         <div class="mb-3">
             <label for="nombre" class="form-label">Nombre completo</label>
@@ -144,6 +143,22 @@
                  th:if="${#fields.hasErrors('barrio')}"
                  th:errors="*{barrio}">
                 Error barrio
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="localidad" class="form-label">Localidad</label>
+            <select id="localidad"
+                    th:field="*{localidad}"
+                    class="form-select">
+                <option value="">Seleccione una localidad</option>
+                <option value="Kennedy">Kennedy</option>
+                <option value="Bosa">Bosa</option>
+            </select>
+            <div class="error-campo"
+                 th:if="${#fields.hasErrors('localidad')}"
+                 th:errors="*{localidad}">
+                Error localidad
             </div>
         </div>
 

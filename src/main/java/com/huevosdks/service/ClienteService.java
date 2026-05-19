@@ -16,9 +16,11 @@ public class ClienteService {
     private final ClienteRepository clienteRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public ClienteService(UsuarioRepository usuarioRepository,
-                          ClienteRepository clienteRepository,
-                          PasswordEncoder passwordEncoder) {
+    public ClienteService(
+            UsuarioRepository usuarioRepository,
+            ClienteRepository clienteRepository,
+            PasswordEncoder passwordEncoder
+    ) {
         this.usuarioRepository = usuarioRepository;
         this.clienteRepository = clienteRepository;
         this.passwordEncoder = passwordEncoder;
@@ -26,33 +28,31 @@ public class ClienteService {
 
     @Transactional
     public void registrar(RegistroClienteDTO dto) {
-
-        // 1. Verificar que las contraseñas coincidan
         if (!dto.getPassword().equals(dto.getConfirmarPassword())) {
             throw new IllegalArgumentException("Las contraseñas no coinciden");
         }
 
-        // 2. Verificar que el teléfono no esté ya registrado
         if (usuarioRepository.existsByTelefono(dto.getTelefono())) {
             throw new IllegalArgumentException("El teléfono ya está registrado");
         }
 
-        // 3. Crear el Usuario (credenciales de login)
         Usuario usuario = new Usuario();
         usuario.setTelefono(dto.getTelefono());
         usuario.setNombre(dto.getNombre());
         usuario.setContrasenia(passwordEncoder.encode(dto.getPassword()));
         usuario.setRol(Usuario.Rol.CLIENTE);
         usuario.setActivo(true);
-        usuarioRepository.save(usuario);
 
-        // 4. Crear el Cliente vinculado al Usuario (datos de entrega)
+        Usuario usuarioGuardado = usuarioRepository.save(usuario);
+
         Cliente cliente = new Cliente();
         cliente.setNombre(dto.getNombre());
         cliente.setTelefono(dto.getTelefono());
         cliente.setDireccion(dto.getDireccion());
         cliente.setBarrio(dto.getBarrio());
-        cliente.setUsuario(usuario);
+        cliente.setLocalidad(dto.getLocalidad());
+        cliente.setUsuario(usuarioGuardado);
+
         clienteRepository.save(cliente);
     }
 }

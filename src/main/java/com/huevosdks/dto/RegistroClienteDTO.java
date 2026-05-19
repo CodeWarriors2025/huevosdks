@@ -10,13 +10,6 @@ public class RegistroClienteDTO {
     @Size(min = 3, max = 100, message = "El nombre debe tener entre 3 y 100 caracteres")
     private String nombre;
 
-    @NotBlank(message = "La contraseña es obligatoria")
-    @Size(min = 6, message = "La contraseña debe tener al menos 6 caracteres")
-    private String password;
-
-    @NotBlank(message = "Debe confirmar la contraseña")
-    private String confirmarPassword;
-
     @NotBlank(message = "El teléfono es obligatorio")
     @Pattern(regexp = "^[0-9]{7,15}$", message = "El teléfono debe tener entre 7 y 15 dígitos")
     private String telefono;
@@ -27,22 +20,69 @@ public class RegistroClienteDTO {
     @NotBlank(message = "El barrio es obligatorio")
     private String barrio;
 
-    // Getters y Setters
-    public String getNombre() { return nombre; }
-    public void setNombre(String nombre) { this.nombre = nombre; }
+    @NotBlank(message = "La localidad es obligatoria")
+    private String localidad;
 
-    public String getPassword() { return password; }
-    public void setPassword(String password) { this.password = password; }
+    @NotBlank(message = "La contraseña es obligatoria")
+    @Size(min = 6, message = "La contraseña debe tener al menos 6 caracteres")
+    private String password;
 
-    public String getConfirmarPassword() { return confirmarPassword; }
-    public void setConfirmarPassword(String confirmarPassword) { this.confirmarPassword = confirmarPassword; }
+    @NotBlank(message = "Debe confirmar la contraseña")
+    private String confirmarPassword;
 
-    public String getTelefono() { return telefono; }
-    public void setTelefono(String telefono) { this.telefono = telefono; }
+    public String getNombre() {
+        return nombre;
+    }
 
-    public String getDireccion() { return direccion; }
-    public void setDireccion(String direccion) { this.direccion = direccion; }
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
 
-    public String getBarrio() { return barrio; }
-    public void setBarrio(String barrio) { this.barrio = barrio; }
+    public String getTelefono() {
+        return telefono;
+    }
+
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
+    }
+
+    public String getDireccion() {
+        return direccion;
+    }
+
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
+    }
+
+    public String getBarrio() {
+        return barrio;
+    }
+
+    public void setBarrio(String barrio) {
+        this.barrio = barrio;
+    }
+
+    public String getLocalidad() {
+        return localidad;
+    }
+
+    public void setLocalidad(String localidad) {
+        this.localidad = localidad;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getConfirmarPassword() {
+        return confirmarPassword;
+    }
+
+    public void setConfirmarPassword(String confirmarPassword) {
+        this.confirmarPassword = confirmarPassword;
+    }
 }
