@@ -39,12 +39,4 @@ public class HomeController {
         model.addAttribute("rol", "OPERADOR");
         return "dashboard";
     }
-
-    @GetMapping("/catalogo")
-    public String catalogo(Authentication authentication, Model model) {
-        model.addAttribute("titulo", "Catálogo Cliente");
-        model.addAttribute("usuario", authentication.getName());
-        model.addAttribute("rol", "CLIENTE");
-        return "dashboard";
-    }
 }

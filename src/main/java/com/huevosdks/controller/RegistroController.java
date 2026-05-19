@@ -11,9 +11,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-// @Controller indica que esta clase maneja peticiones HTTP y devuelve vistas (páginas HTML)
 @Controller
-// @RequestMapping define el prefijo de todas las rutas de este controlador
 @RequestMapping("/registro")
 public class RegistroController {
 
@@ -23,37 +21,34 @@ public class RegistroController {
         this.clienteService = clienteService;
     }
 
-    // @GetMapping maneja peticiones GET — muestra el formulario vacío
-    @GetMapping
-    public String mostrarFormulario(Model model) {
-        // Model lleva datos a la vista Thymeleaf
-        // Enviamos un DTO vacío para que Thymeleaf lo enlace con el formulario
-        model.addAttribute("registroDTO", new RegistroClienteDTO());
-        return "registro"; // busca templates/registro.html
+    @ModelAttribute("registroDTO")
+    public RegistroClienteDTO registroDTO() {
+        return new RegistroClienteDTO();
     }
 
-    // @PostMapping maneja peticiones POST — procesa el formulario enviado
-    @PostMapping
-    public String procesarRegistro(
-            // @Valid activa las validaciones del DTO (@NotBlank, @Size, etc.)
-            // @ModelAttribute enlaza los campos del formulario con el DTO
-            @Valid @ModelAttribute("registroDTO") RegistroClienteDTO dto,
-            // BindingResult contiene los errores de validación (si los hay)
-            BindingResult resultado,
-            Model model) {
+    @GetMapping({"", "/"})
+    public String mostrarFormulario() {
+        return "registro";
+    }
 
-        // Si hay errores de validación, volvemos al formulario con los mensajes
+    @PostMapping({"", "/"})
+    public String procesarRegistro(
+            @Valid @ModelAttribute("registroDTO") RegistroClienteDTO dto,
+            BindingResult resultado,
+            Model model
+    ) {
         if (resultado.hasErrors()) {
             return "registro";
         }
 
         try {
             clienteService.registrar(dto);
-            // Registro exitoso: redirigimos al login con mensaje de éxito
-            return "redirect:/login?registroExitoso";
+            return "redirect:/login?registroExitoso=true";
         } catch (IllegalArgumentException e) {
-            // Error de negocio (documento duplicado, contraseñas no coinciden)
             model.addAttribute("error", e.getMessage());
+            return "registro";
+        } catch (Exception e) {
+            model.addAttribute("error", "No fue posible registrar el cliente. Intenta nuevamente.");
             return "registro";
         }
     }
