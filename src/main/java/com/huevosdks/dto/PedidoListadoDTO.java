@@ -15,6 +15,8 @@ public class PedidoListadoDTO {
     private String direccionEntrega;
     private BigDecimal total;
     private Integer cantidadItems;
+    private String clienteNombre;
+    private String clienteTelefono;
 
     public PedidoListadoDTO() {
     }
@@ -26,7 +28,9 @@ public class PedidoListadoDTO {
             String metodoPago,
             String direccionEntrega,
             BigDecimal total,
-            Integer cantidadItems
+            Integer cantidadItems,
+            String clienteNombre,
+            String clienteTelefono
     ) {
         this.id = id;
         this.fechaPedido = fechaPedido;
@@ -35,6 +39,8 @@ public class PedidoListadoDTO {
         this.direccionEntrega = direccionEntrega;
         this.total = total;
         this.cantidadItems = cantidadItems;
+        this.clienteNombre = clienteNombre;
+        this.clienteTelefono = clienteTelefono;
     }
 
     public Long getId() {
@@ -63,6 +69,14 @@ public class PedidoListadoDTO {
 
     public Integer getCantidadItems() {
         return cantidadItems;
+    }
+
+    public String getClienteNombre() {
+        return clienteNombre;
+    }
+
+    public String getClienteTelefono() {
+        return clienteTelefono;
     }
 
     public String getFechaPedidoFormateada() {

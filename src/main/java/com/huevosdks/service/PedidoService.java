@@ -119,6 +119,102 @@ public class PedidoService {
             throw new IllegalArgumentException("No tienes permiso para ver este pedido.");
         }
 
+        return convertirAResumenDTO(pedido);
+    }
+
+    @Transactional(readOnly = true)
+    public PedidoResumenDTO obtenerResumenPedidoAdmin(Long pedidoId) {
+        Pedido pedido = pedidoRepository.findById(pedidoId)
+                .orElseThrow(() -> new IllegalArgumentException("Pedido no encontrado."));
+
+        return convertirAResumenDTO(pedido);
+    }
+
+    @Transactional(readOnly = true)
+    public List<PedidoListadoDTO> listarPedidosCliente(String telefonoUsuario) {
+        Cliente cliente = obtenerClientePorTelefonoUsuario(telefonoUsuario);
+
+        return pedidoRepository.findByClienteOrderByFechaPedidoDesc(cliente)
+                .stream()
+                .map(this::convertirAListadoDTO)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<PedidoListadoDTO> listarPedidosAdmin(String estadoFiltro) {
+        if (estadoFiltro == null || estadoFiltro.isBlank()) {
+            return pedidoRepository.findAllByOrderByFechaPedidoDesc()
+                    .stream()
+                    .map(this::convertirAListadoDTO)
+                    .toList();
+        }
+
+        try {
+            Pedido.EstadoPedido estado = Pedido.EstadoPedido.valueOf(estadoFiltro.trim().toUpperCase());
+
+            return pedidoRepository.findByEstadoOrderByFechaPedidoDesc(estado)
+                    .stream()
+                    .map(this::convertirAListadoDTO)
+                    .toList();
+
+        } catch (IllegalArgumentException e) {
+            return pedidoRepository.findAllByOrderByFechaPedidoDesc()
+                    .stream()
+                    .map(this::convertirAListadoDTO)
+                    .toList();
+        }
+    }
+
+    @Transactional
+    public void cambiarEstadoPedido(Long pedidoId, String estadoNuevo) {
+        if (pedidoId == null) {
+            throw new IllegalArgumentException("Pedido inválido.");
+        }
+
+        if (estadoNuevo == null || estadoNuevo.isBlank()) {
+            throw new IllegalArgumentException("Debe seleccionar un estado.");
+        }
+
+        Pedido pedido = pedidoRepository.findById(pedidoId)
+                .orElseThrow(() -> new IllegalArgumentException("Pedido no encontrado."));
+
+        try {
+            Pedido.EstadoPedido nuevoEstado = Pedido.EstadoPedido.valueOf(estadoNuevo.trim().toUpperCase());
+            pedido.setEstado(nuevoEstado);
+            pedidoRepository.save(pedido);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Estado de pedido no válido.");
+        }
+    }
+
+    private PedidoListadoDTO convertirAListadoDTO(Pedido pedido) {
+        int cantidadItems = detallePedidoRepository.findByPedido(pedido)
+                .stream()
+                .mapToInt(detalle -> detalle.getCantidad() == null ? 0 : detalle.getCantidad())
+                .sum();
+
+        String clienteNombre = "";
+        String clienteTelefono = "";
+
+        if (pedido.getCliente() != null) {
+            clienteNombre = pedido.getCliente().getNombre();
+            clienteTelefono = pedido.getCliente().getTelefono();
+        }
+
+        return new PedidoListadoDTO(
+                pedido.getId(),
+                pedido.getFechaPedido(),
+                pedido.getEstado().name(),
+                pedido.getMetodoPago().name(),
+                pedido.getDireccionEntrega(),
+                pedido.getTotal(),
+                cantidadItems,
+                clienteNombre,
+                clienteTelefono
+        );
+    }
+
+    private PedidoResumenDTO convertirAResumenDTO(Pedido pedido) {
         List<DetallePedidoResumenDTO> detalles = detallePedidoRepository.findByPedido(pedido)
                 .stream()
                 .map(detalle -> new DetallePedidoResumenDTO(
@@ -138,33 +234,6 @@ public class PedidoService {
                 pedido.getObservaciones(),
                 pedido.getTotal(),
                 detalles
-        );
-    }
-
-    @Transactional(readOnly = true)
-    public List<PedidoListadoDTO> listarPedidosCliente(String telefonoUsuario) {
-        Cliente cliente = obtenerClientePorTelefonoUsuario(telefonoUsuario);
-
-        return pedidoRepository.findByClienteOrderByFechaPedidoDesc(cliente)
-                .stream()
-                .map(this::convertirAListadoDTO)
-                .toList();
-    }
-
-    private PedidoListadoDTO convertirAListadoDTO(Pedido pedido) {
-        int cantidadItems = detallePedidoRepository.findByPedido(pedido)
-                .stream()
-                .mapToInt(detalle -> detalle.getCantidad() == null ? 0 : detalle.getCantidad())
-                .sum();
-
-        return new PedidoListadoDTO(
-                pedido.getId(),
-                pedido.getFechaPedido(),
-                pedido.getEstado().name(),
-                pedido.getMetodoPago().name(),
-                pedido.getDireccionEntrega(),
-                pedido.getTotal(),
-                cantidadItems
         );
     }
 

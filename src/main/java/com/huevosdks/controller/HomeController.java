@@ -25,11 +25,8 @@ public class HomeController {
     }
 
     @GetMapping("/admin")
-    public String admin(Authentication authentication, Model model) {
-        model.addAttribute("titulo", "Panel Administrador");
-        model.addAttribute("usuario", authentication.getName());
-        model.addAttribute("rol", "ADMIN");
-        return "dashboard";
+    public String admin() {
+        return "redirect:/admin/pedidos";
     }
 
     @GetMapping("/operador")
