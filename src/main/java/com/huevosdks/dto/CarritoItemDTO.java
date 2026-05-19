@@ -12,6 +12,7 @@ public class CarritoItemDTO {
     private BigDecimal precioUnitario;
     private Integer cantidad;
     private Integer cantidadDisponible;
+    private Integer unidadesPorPresentacion;
 
     public CarritoItemDTO() {
     }
@@ -22,7 +23,8 @@ public class CarritoItemDTO {
             String descripcion,
             BigDecimal precioUnitario,
             Integer cantidad,
-            Integer cantidadDisponible
+            Integer cantidadDisponible,
+            Integer unidadesPorPresentacion
     ) {
         this.productoId = productoId;
         this.nombre = nombre;
@@ -30,6 +32,7 @@ public class CarritoItemDTO {
         this.precioUnitario = precioUnitario;
         this.cantidad = cantidad;
         this.cantidadDisponible = cantidadDisponible;
+        this.unidadesPorPresentacion = unidadesPorPresentacion;
     }
 
     public Long getProductoId() {
@@ -78,6 +81,21 @@ public class CarritoItemDTO {
 
     public void setCantidadDisponible(Integer cantidadDisponible) {
         this.cantidadDisponible = cantidadDisponible;
+    }
+
+    public Integer getUnidadesPorPresentacion() {
+        return unidadesPorPresentacion;
+    }
+
+    public void setUnidadesPorPresentacion(Integer unidadesPorPresentacion) {
+        this.unidadesPorPresentacion = unidadesPorPresentacion;
+    }
+
+    public Integer getHuevosItem() {
+        int cantidadSegura = cantidad == null ? 0 : cantidad;
+        int unidadesSeguras = unidadesPorPresentacion == null ? 1 : unidadesPorPresentacion;
+
+        return cantidadSegura * unidadesSeguras;
     }
 
     public BigDecimal getSubtotal() {

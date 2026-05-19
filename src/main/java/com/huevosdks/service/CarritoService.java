@@ -61,6 +61,7 @@ public class CarritoService {
         if (itemExistente.isPresent()) {
             itemExistente.get().setCantidad(nuevaCantidad);
             itemExistente.get().setCantidadDisponible(stockDisponible);
+            itemExistente.get().setUnidadesPorPresentacion(producto.getUnidadesPorPresentacion());
         } else {
             CarritoItemDTO nuevoItem = new CarritoItemDTO(
                     producto.getId(),
@@ -68,7 +69,8 @@ public class CarritoService {
                     producto.getDescripcion(),
                     producto.getPrecioUnitario(),
                     cantidadSolicitada,
-                    stockDisponible
+                    stockDisponible,
+                    producto.getUnidadesPorPresentacion()
             );
 
             carrito.getItems().add(nuevoItem);
@@ -95,6 +97,7 @@ public class CarritoService {
         buscarItem(carrito, productoId).ifPresent(item -> {
             item.setCantidad(nuevaCantidad);
             item.setCantidadDisponible(stockDisponible);
+            item.setUnidadesPorPresentacion(producto.getUnidadesPorPresentacion());
         });
     }
 

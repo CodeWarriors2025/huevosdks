@@ -55,6 +55,8 @@ public class PedidoService {
             throw new IllegalArgumentException("El carrito está vacío.");
         }
 
+        validarMinimoHuevosPedido(carrito);
+
         Usuario usuario = usuarioRepository.findByTelefono(telefonoUsuario)
                 .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado."));
 
@@ -210,6 +212,20 @@ public class PedidoService {
 
         pedido.setEstado(Pedido.EstadoPedido.ENTREGADO);
         pedidoRepository.save(pedido);
+    }
+
+    private void validarMinimoHuevosPedido(CarritoDTO carrito) {
+        int totalHuevos = carrito.getTotalHuevos();
+
+        if (totalHuevos < CarritoDTO.MINIMO_HUEVOS_PEDIDO) {
+            throw new IllegalArgumentException(
+                    "El pedido mínimo es de 6 huevos. Actualmente tienes "
+                            + totalHuevos
+                            + " huevo(s). Agrega "
+                            + carrito.getHuevosFaltantes()
+                            + " huevo(s) más."
+            );
+        }
     }
 
     private PedidoListadoDTO convertirAListadoDTO(Pedido pedido) {
