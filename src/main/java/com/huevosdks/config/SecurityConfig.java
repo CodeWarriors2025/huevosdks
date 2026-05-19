@@ -60,6 +60,7 @@ public class SecurityConfig {
                 .requestMatchers("/admin", "/admin/**").hasRole("ADMIN")
                 .requestMatchers("/operador", "/operador/**").hasRole("OPERADOR")
                 .requestMatchers("/catalogo", "/catalogo/**").hasRole("CLIENTE")
+                .requestMatchers("/carrito", "/carrito/**").hasRole("CLIENTE")
                 .anyRequest().authenticated()
         );
 
