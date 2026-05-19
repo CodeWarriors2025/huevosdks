@@ -2,7 +2,6 @@ package com.huevosdks.controller;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
@@ -30,10 +29,7 @@ public class HomeController {
     }
 
     @GetMapping("/operador")
-    public String operador(Authentication authentication, Model model) {
-        model.addAttribute("titulo", "Panel Operador");
-        model.addAttribute("usuario", authentication.getName());
-        model.addAttribute("rol", "OPERADOR");
-        return "dashboard";
+    public String operador() {
+        return "redirect:/operador/pedidos";
     }
 }

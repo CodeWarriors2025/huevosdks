@@ -165,6 +165,14 @@ public class PedidoService {
         }
     }
 
+    @Transactional(readOnly = true)
+    public List<PedidoListadoDTO> listarPedidosOperador() {
+        return pedidoRepository.findByEstadoOrderByFechaPedidoDesc(Pedido.EstadoPedido.EN_RUTA)
+                .stream()
+                .map(this::convertirAListadoDTO)
+                .toList();
+    }
+
     @Transactional
     public void cambiarEstadoPedido(Long pedidoId, String estadoNuevo) {
         if (pedidoId == null) {
@@ -185,6 +193,23 @@ public class PedidoService {
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("Estado de pedido no válido.");
         }
+    }
+
+    @Transactional
+    public void marcarPedidoEntregadoOperador(Long pedidoId) {
+        if (pedidoId == null) {
+            throw new IllegalArgumentException("Pedido inválido.");
+        }
+
+        Pedido pedido = pedidoRepository.findById(pedidoId)
+                .orElseThrow(() -> new IllegalArgumentException("Pedido no encontrado."));
+
+        if (pedido.getEstado() != Pedido.EstadoPedido.EN_RUTA) {
+            throw new IllegalArgumentException("Solo se pueden entregar pedidos que estén EN_RUTA.");
+        }
+
+        pedido.setEstado(Pedido.EstadoPedido.ENTREGADO);
+        pedidoRepository.save(pedido);
     }
 
     private PedidoListadoDTO convertirAListadoDTO(Pedido pedido) {
