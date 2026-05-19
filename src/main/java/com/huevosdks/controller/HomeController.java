@@ -25,7 +25,7 @@ public class HomeController {
 
     @GetMapping("/admin")
     public String admin() {
-        return "redirect:/admin/pedidos";
+        return "admin-dashboard";
     }
 
     @GetMapping("/operador")
