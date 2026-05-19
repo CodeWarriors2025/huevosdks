@@ -19,9 +19,11 @@ public class SecurityConfig {
     private final PasswordEncoder passwordEncoder;
     private final RolSuccessHandler rolSuccessHandler;
 
-    public SecurityConfig(UsuarioDetailsService usuarioDetailsService,
-                          PasswordEncoder passwordEncoder,
-                          RolSuccessHandler rolSuccessHandler) {
+    public SecurityConfig(
+            UsuarioDetailsService usuarioDetailsService,
+            PasswordEncoder passwordEncoder,
+            RolSuccessHandler rolSuccessHandler
+    ) {
         this.usuarioDetailsService = usuarioDetailsService;
         this.passwordEncoder = passwordEncoder;
         this.rolSuccessHandler = rolSuccessHandler;
@@ -29,9 +31,9 @@ public class SecurityConfig {
 
     @Bean
     public DaoAuthenticationProvider daoAuthProvider() {
-        DaoAuthenticationProvider p = new DaoAuthenticationProvider(passwordEncoder);
-        p.setUserDetailsService(usuarioDetailsService);
-        return p;
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider(passwordEncoder);
+        provider.setUserDetailsService(usuarioDetailsService);
+        return provider;
     }
 
     @Bean
@@ -41,28 +43,39 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-
         http.authenticationManager(authenticationManager());
 
         http.authorizeHttpRequests(auth -> auth
-                .requestMatchers("/registro", "/login", "/hash", "/css/**",
-                        "/js/**", "/img/**", "/error/**").permitAll()
-                .requestMatchers("/admin/**").hasRole("ADMIN")
-                .requestMatchers("/operador/**").hasRole("OPERADOR")
-                .requestMatchers("/catalogo/**").hasRole("CLIENTE")
-                .anyRequest().authenticated());
+                .requestMatchers(
+                        "/",
+                        "/registro",
+                        "/registro/**",
+                        "/login",
+                        "/hash",
+                        "/css/**",
+                        "/js/**",
+                        "/img/**",
+                        "/error/**"
+                ).permitAll()
+                .requestMatchers("/admin", "/admin/**").hasRole("ADMIN")
+                .requestMatchers("/operador", "/operador/**").hasRole("OPERADOR")
+                .requestMatchers("/catalogo", "/catalogo/**").hasRole("CLIENTE")
+                .anyRequest().authenticated()
+        );
 
         http.formLogin(form -> form
                 .loginPage("/login")
                 .loginProcessingUrl("/login")
                 .successHandler(rolSuccessHandler)
                 .failureUrl("/login?error=true")
-                .permitAll());
+                .permitAll()
+        );
 
         http.logout(logout -> logout
                 .logoutUrl("/logout")
                 .logoutSuccessUrl("/login?logout=true")
-                .permitAll());
+                .permitAll()
+        );
 
         return http.build();
     }
