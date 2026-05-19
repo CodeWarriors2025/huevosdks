@@ -115,12 +115,16 @@
             <span>HUEVOS DKS</span>
         </a>
 
-        <div class="ms-auto d-flex align-items-center gap-3">
+        <div class="ms-auto d-flex align-items-center gap-2 flex-wrap justify-content-end">
+            <a href="/mis-pedidos" class="btn btn-outline-light btn-sm">
+                Mis pedidos
+            </a>
+
             <a href="/carrito" class="btn btn-dks btn-sm">
                 Ver carrito
             </a>
 
-            <span class="text-white small d-none d-md-inline">
+            <span class="text-white small d-none d-md-inline ms-2">
                 Cliente:
                 <strong sec:authentication="name">usuario</strong>
             </span>

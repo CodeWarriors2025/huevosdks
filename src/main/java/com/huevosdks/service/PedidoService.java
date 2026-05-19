@@ -3,6 +3,7 @@ package com.huevosdks.service;
 import com.huevosdks.dto.CarritoDTO;
 import com.huevosdks.dto.CarritoItemDTO;
 import com.huevosdks.dto.DetallePedidoResumenDTO;
+import com.huevosdks.dto.PedidoListadoDTO;
 import com.huevosdks.dto.PedidoResumenDTO;
 import com.huevosdks.entity.Cliente;
 import com.huevosdks.entity.DetallePedido;
@@ -54,7 +55,7 @@ public class PedidoService {
             throw new IllegalArgumentException("El carrito está vacío.");
         }
 
-        Usuario usuario = (Usuario) usuarioRepository.findByTelefono(telefonoUsuario)
+        Usuario usuario = usuarioRepository.findByTelefono(telefonoUsuario)
                 .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado."));
 
         Cliente cliente = clienteRepository.findByUsuario(usuario);
@@ -77,10 +78,10 @@ public class PedidoService {
         Pedido pedidoGuardado = pedidoRepository.save(pedido);
 
         for (CarritoItemDTO item : carrito.getItems()) {
-            Producto producto = (Producto) productoRepository.findById(item.getProductoId())
+            Producto producto = productoRepository.findById(item.getProductoId())
                     .orElseThrow(() -> new IllegalArgumentException("Producto no encontrado."));
 
-            Inventario inventario = (Inventario) inventarioRepository.findByProducto(producto)
+            Inventario inventario = inventarioRepository.findByProducto(producto)
                     .orElseThrow(() -> new IllegalArgumentException("No existe inventario para el producto: " + producto.getNombre()));
 
             int cantidadAnterior = inventario.getCantidadDisponible();
@@ -109,14 +110,7 @@ public class PedidoService {
 
     @Transactional(readOnly = true)
     public PedidoResumenDTO obtenerResumenPedido(Long pedidoId, String telefonoUsuario) {
-        Usuario usuario = (Usuario) usuarioRepository.findByTelefono(telefonoUsuario)
-                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado."));
-
-        Cliente cliente = clienteRepository.findByUsuario(usuario);
-
-        if (cliente == null) {
-            throw new IllegalArgumentException("No existe información de cliente para este usuario.");
-        }
+        Cliente cliente = obtenerClientePorTelefonoUsuario(telefonoUsuario);
 
         Pedido pedido = pedidoRepository.findById(pedidoId)
                 .orElseThrow(() -> new IllegalArgumentException("Pedido no encontrado."));
@@ -147,16 +141,56 @@ public class PedidoService {
         );
     }
 
+    @Transactional(readOnly = true)
+    public List<PedidoListadoDTO> listarPedidosCliente(String telefonoUsuario) {
+        Cliente cliente = obtenerClientePorTelefonoUsuario(telefonoUsuario);
+
+        return pedidoRepository.findByClienteOrderByFechaPedidoDesc(cliente)
+                .stream()
+                .map(this::convertirAListadoDTO)
+                .toList();
+    }
+
+    private PedidoListadoDTO convertirAListadoDTO(Pedido pedido) {
+        int cantidadItems = detallePedidoRepository.findByPedido(pedido)
+                .stream()
+                .mapToInt(detalle -> detalle.getCantidad() == null ? 0 : detalle.getCantidad())
+                .sum();
+
+        return new PedidoListadoDTO(
+                pedido.getId(),
+                pedido.getFechaPedido(),
+                pedido.getEstado().name(),
+                pedido.getMetodoPago().name(),
+                pedido.getDireccionEntrega(),
+                pedido.getTotal(),
+                cantidadItems
+        );
+    }
+
+    private Cliente obtenerClientePorTelefonoUsuario(String telefonoUsuario) {
+        Usuario usuario = usuarioRepository.findByTelefono(telefonoUsuario)
+                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado."));
+
+        Cliente cliente = clienteRepository.findByUsuario(usuario);
+
+        if (cliente == null) {
+            throw new IllegalArgumentException("No existe información de cliente para este usuario.");
+        }
+
+        return cliente;
+    }
+
     private void validarStockDisponible(CarritoDTO carrito) {
         for (CarritoItemDTO item : carrito.getItems()) {
-            Producto producto = (Producto) productoRepository.findById(item.getProductoId())
+            Producto producto = productoRepository.findById(item.getProductoId())
                     .orElseThrow(() -> new IllegalArgumentException("Producto no encontrado."));
 
             if (!producto.isActivo()) {
                 throw new IllegalArgumentException("El producto no está activo: " + producto.getNombre());
             }
 
-            Inventario inventario = (Inventario) inventarioRepository.findByProducto(producto)
+            Inventario inventario = inventarioRepository.findByProducto(producto)
                     .orElseThrow(() -> new IllegalArgumentException("No existe inventario para el producto: " + producto.getNombre()));
 
             if (inventario.getCantidadDisponible() < item.getCantidad()) {
