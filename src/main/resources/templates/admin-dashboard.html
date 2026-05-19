@@ -95,12 +95,12 @@
     <section class="mb-4">
         <h2 class="titulo-seccion mb-1">Panel administrador</h2>
         <p class="text-muted mb-0">
-            Gestiona pedidos, productos, inventario, usuarios y clientes del sistema.
+            Gestiona pedidos, productos, inventario, usuarios, clientes y reportes del sistema.
         </p>
     </section>
 
     <section class="row g-4">
-        <div class="col-12 col-md-6 col-lg-4">
+        <div class="col-12 col-md-6 col-lg-3">
             <div class="card card-admin h-100">
                 <div class="card-body text-center p-4">
                     <div class="icono-panel mb-3">📦</div>
@@ -115,11 +115,11 @@
             </div>
         </div>
 
-        <div class="col-12 col-md-6 col-lg-4">
+        <div class="col-12 col-md-6 col-lg-3">
             <div class="card card-admin h-100">
                 <div class="card-body text-center p-4">
                     <div class="icono-panel mb-3">🥚</div>
-                    <h4 class="fw-bold">Productos e inventario</h4>
+                    <h4 class="fw-bold">Productos</h4>
                     <p class="text-muted">
                         Crea productos, edita precios y ajusta inventario.
                     </p>
@@ -130,16 +130,31 @@
             </div>
         </div>
 
-        <div class="col-12 col-md-6 col-lg-4">
+        <div class="col-12 col-md-6 col-lg-3">
             <div class="card card-admin h-100">
                 <div class="card-body text-center p-4">
                     <div class="icono-panel mb-3">👥</div>
-                    <h4 class="fw-bold">Usuarios y clientes</h4>
+                    <h4 class="fw-bold">Usuarios</h4>
                     <p class="text-muted">
-                        Consulta usuarios, roles, estado de acceso y clientes registrados.
+                        Consulta usuarios, roles, estado de acceso y clientes.
                     </p>
                     <a href="/admin/usuarios" class="btn btn-dks">
                         Gestionar usuarios
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-6 col-lg-3">
+            <div class="card card-admin h-100">
+                <div class="card-body text-center p-4">
+                    <div class="icono-panel mb-3">📊</div>
+                    <h4 class="fw-bold">Reportes</h4>
+                    <p class="text-muted">
+                        Revisa ventas, pedidos, clientes y alertas de inventario.
+                    </p>
+                    <a href="/admin/reportes" class="btn btn-dks">
+                        Ver reportes
                     </a>
                 </div>
             </div>
