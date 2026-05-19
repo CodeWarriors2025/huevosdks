@@ -222,14 +222,16 @@
                         </button>
                     </form>
 
-                    <button type="button" class="btn btn-dks" disabled>
-                        Crear pedido
-                    </button>
+                    <form th:action="@{/carrito/crear-pedido}" method="post">
+                        <button type="submit" class="btn btn-dks">
+                            Crear pedido
+                        </button>
+                    </form>
                 </div>
             </div>
 
             <small class="text-muted d-block mt-3">
-                La creación definitiva del pedido se implementará en la siguiente fase.
+                Al crear el pedido, el inventario disponible se descontará automáticamente.
             </small>
         </div>
     </section>
