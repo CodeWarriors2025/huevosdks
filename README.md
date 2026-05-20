@@ -81,3 +81,46 @@ src/main/java/com/huevosdks
 ├── pedido-confirmado.html
 ├── perfil.html
 └── registro.html
+oles del sistema
+ADMIN
+
+Usuario encargado de administrar el sistema.
+
+Funciones:
+
+Crear productos.
+Actualizar inventario.
+Ver pedidos.
+Cambiar estados de pedidos.
+Crear operadores.
+Ver reportes.
+Activar o desactivar usuarios.
+CLIENTE
+
+Usuario que realiza pedidos.
+
+Funciones:
+
+Registrarse.
+Ver catálogo.
+Agregar productos al carrito.
+Crear pedidos.
+Consultar sus pedidos.
+Actualizar dirección de entrega.
+OPERADOR
+
+Usuario encargado de la entrega.
+
+Funciones:
+
+Ver pedidos en ruta.
+Marcar pedidos como entregados.
+Reglas de negocio implementadas
+El registro público solo crea usuarios con rol CLIENTE.
+Los operadores solo pueden ser creados por un ADMIN.
+El pedido mínimo es de 6 huevos.
+Los productos inactivos no aparecen en el catálogo del cliente.
+Los pedidos en estado EN_RUTA aparecen en el panel del operador.
+Un usuario inactivo no puede iniciar sesión.
+El administrador no puede desactivarse a sí mismo.
+No se permite desactivar el último administrador activo.
