@@ -60,7 +60,7 @@ El sistema cuenta con tres roles principales:
 
 ADMIN
 Usuario encargado de administrar el sistema.
-
+```text
 Funciones:
 Crear productos.
 Actualizar inventario.
@@ -72,7 +72,7 @@ Activar o desactivar usuarios.
 
 CLIENTE
 Usuario que realiza pedidos.
-
+```text
 Funciones:
 Registrarse.
 Ver catálogo.
@@ -83,7 +83,7 @@ Actualizar dirección de entrega.
 
 OPERADOR
 Usuario encargado de la entrega.
-
+```text
 Funciones:
 Ver pedidos en ruta.
 Marcar pedidos como entregados.
@@ -98,7 +98,8 @@ El administrador no puede desactivarse a sí mismo.
 No se permite desactivar el último administrador activo.
 
 ## Estructura principal
-
+ 
+```text
 src/main/java/com/huevosdks
 ├── config
 ├── controller
