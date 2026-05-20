@@ -1,3 +1,4 @@
+```text
 # HUEVOS DKS
 
 Sistema web para la gestión de pedidos de huevos a domicilio, desarrollado como proyecto formativo SENA.
