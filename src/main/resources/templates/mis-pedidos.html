@@ -30,6 +30,10 @@
             font-weight: 800;
         }
 
+        .nav-link:hover {
+            color: var(--dks-amarillo) !important;
+        }
+
         .logo-navbar {
             height: 42px;
             width: auto;
@@ -39,6 +43,12 @@
         .titulo-seccion {
             color: var(--dks-azul-oscuro);
             font-weight: 800;
+        }
+
+        .card-pedidos {
+            border: none;
+            border-radius: 18px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.10);
         }
 
         .btn-dks {
@@ -64,73 +74,38 @@
             color: #ffffff;
         }
 
-        .card-pedidos {
-            border: none;
-            border-radius: 18px;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.10);
-        }
-
-        .badge-pendiente {
-            background-color: #ffc107;
-            color: #1b3a6b;
-        }
-
-        .badge-ruta {
-            background-color: #0dcaf0;
-            color: #1b3a6b;
-        }
-
-        .badge-entregado {
-            background-color: #198754;
-        }
-
-        .badge-cancelado {
-            background-color: #dc3545;
+        .direccion {
+            max-width: 360px;
+            white-space: normal;
         }
     </style>
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-dks">
-    <div class="container">
-        <a class="navbar-brand d-flex align-items-center gap-2" href="/catalogo">
-            <img src="/img/logo-huevos-dks.png"
-                 alt="HUEVOS DKS"
-                 class="logo-navbar">
-            <span>HUEVOS DKS</span>
-        </a>
-
-        <div class="ms-auto d-flex align-items-center gap-3">
-            <a href="/catalogo" class="btn btn-dks btn-sm">
-                Catálogo
-            </a>
-
-            <a href="/carrito" class="btn btn-outline-light btn-sm">
-                Carrito
-            </a>
-
-            <span class="text-white small d-none d-md-inline">
-                Cliente:
-                <strong sec:authentication="name">usuario</strong>
-            </span>
-
-            <form th:action="@{/logout}" method="post" class="m-0">
-                <button type="submit" class="btn btn-outline-light btn-sm">
-                    Salir
-                </button>
-            </form>
-        </div>
-    </div>
-</nav>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
 
 <main class="container py-4">
 
-    <section class="mb-4">
-        <h2 class="titulo-seccion mb-1">Mis pedidos</h2>
-        <p class="text-muted mb-0">
-            Consulta el historial de pedidos realizados desde tu cuenta.
-        </p>
+    <section class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+        <div>
+            <h2 class="titulo-seccion mb-1">Mis pedidos</h2>
+            <p class="text-muted mb-0">
+                Consulta el estado de tus pedidos registrados.
+            </p>
+        </div>
+
+        <a href="/catalogo" class="btn btn-dks">
+            Nuevo pedido
+        </a>
     </section>
+
+    <div th:if="${mensaje}" class="alert alert-success" th:text="${mensaje}">
+        Mensaje exitoso
+    </div>
+
+    <div th:if="${error}" class="alert alert-danger" th:text="${error}">
+        Mensaje de error
+    </div>
 
     <section th:if="${#lists.isEmpty(pedidos)}" class="card card-pedidos">
         <div class="card-body text-center py-5">
@@ -153,10 +128,10 @@
                         <th>Pedido</th>
                         <th>Fecha</th>
                         <th>Estado</th>
-                        <th>Método de pago</th>
+                        <th>Método pago</th>
+                        <th>Dirección</th>
                         <th>Unidades</th>
                         <th>Total</th>
-                        <th class="text-end">Acción</th>
                     </tr>
                     </thead>
 
@@ -167,37 +142,21 @@
                         </td>
 
                         <td th:text="${pedido.fechaPedidoFormateada}">
-                            19/05/2026 16:40
+                            19/05/2026 18:00
                         </td>
 
                         <td>
-                            <span th:if="${pedido.estado == 'PENDIENTE'}"
-                                  class="badge badge-pendiente"
-                                  th:text="${pedido.estado}">
+                            <span class="badge bg-primary" th:text="${pedido.estado}">
                                 PENDIENTE
-                            </span>
-
-                            <span th:if="${pedido.estado == 'EN_RUTA'}"
-                                  class="badge badge-ruta"
-                                  th:text="${pedido.estado}">
-                                EN_RUTA
-                            </span>
-
-                            <span th:if="${pedido.estado == 'ENTREGADO'}"
-                                  class="badge badge-entregado"
-                                  th:text="${pedido.estado}">
-                                ENTREGADO
-                            </span>
-
-                            <span th:if="${pedido.estado == 'CANCELADO'}"
-                                  class="badge badge-cancelado"
-                                  th:text="${pedido.estado}">
-                                CANCELADO
                             </span>
                         </td>
 
                         <td th:text="${pedido.metodoPago}">
                             EFECTIVO
+                        </td>
+
+                        <td class="direccion" th:text="${pedido.direccionEntrega}">
+                            Dirección
                         </td>
 
                         <td th:text="${pedido.cantidadItems}">
@@ -209,17 +168,14 @@
                                 $ 0
                             </strong>
                         </td>
-
-                        <td class="text-end">
-                            <a th:href="@{/mis-pedidos/{id}(id=${pedido.id})}"
-                               class="btn btn-outline-dks btn-sm">
-                                Ver detalle
-                            </a>
-                        </td>
                     </tr>
                     </tbody>
                 </table>
             </div>
+
+            <small class="text-muted">
+                El estado del pedido cambiará cuando sea gestionado por el administrador y el operador.
+            </small>
         </div>
     </section>
 

@@ -31,27 +31,26 @@ public class CarritoController {
     }
 
     @ModelAttribute("carrito")
-    public CarritoDTO carrito() {
+    public CarritoDTO inicializarCarrito() {
         return new CarritoDTO();
     }
 
     @GetMapping("/carrito")
     public String verCarrito(
             @ModelAttribute("carrito") CarritoDTO carrito,
-            Authentication authentication,
             Model model
     ) {
         model.addAttribute("titulo", "Mi carrito");
-        model.addAttribute("usuario", authentication.getName());
         model.addAttribute("carrito", carrito);
+
         return "carrito";
     }
 
     @PostMapping("/carrito/agregar")
     public String agregarProducto(
-            @ModelAttribute("carrito") CarritoDTO carrito,
             @RequestParam Long productoId,
-            @RequestParam(defaultValue = "1") Integer cantidad,
+            @RequestParam(required = false) Integer cantidad,
+            @ModelAttribute("carrito") CarritoDTO carrito,
             RedirectAttributes redirectAttributes
     ) {
         try {
@@ -66,9 +65,9 @@ public class CarritoController {
 
     @PostMapping("/carrito/actualizar")
     public String actualizarCantidad(
-            @ModelAttribute("carrito") CarritoDTO carrito,
             @RequestParam Long productoId,
             @RequestParam Integer cantidad,
+            @ModelAttribute("carrito") CarritoDTO carrito,
             RedirectAttributes redirectAttributes
     ) {
         try {
@@ -83,12 +82,13 @@ public class CarritoController {
 
     @PostMapping("/carrito/eliminar")
     public String eliminarProducto(
-            @ModelAttribute("carrito") CarritoDTO carrito,
             @RequestParam Long productoId,
+            @ModelAttribute("carrito") CarritoDTO carrito,
             RedirectAttributes redirectAttributes
     ) {
         carritoService.eliminarProducto(carrito, productoId);
         redirectAttributes.addFlashAttribute("mensaje", "Producto eliminado del carrito.");
+
         return "redirect:/carrito";
     }
 
@@ -98,7 +98,8 @@ public class CarritoController {
             RedirectAttributes redirectAttributes
     ) {
         carritoService.vaciar(carrito);
-        redirectAttributes.addFlashAttribute("mensaje", "Carrito vaciado.");
+        redirectAttributes.addFlashAttribute("mensaje", "Carrito vaciado correctamente.");
+
         return "redirect:/carrito";
     }
 
@@ -111,25 +112,34 @@ public class CarritoController {
         try {
             Long pedidoId = pedidoService.crearPedidoDesdeCarrito(carrito, authentication.getName());
             carritoService.vaciar(carrito);
-            return "redirect:/carrito/pedido-confirmado/" + pedidoId;
+
+            redirectAttributes.addFlashAttribute("mensaje", "Pedido creado correctamente.");
+            return "redirect:/pedido-confirmado/" + pedidoId;
+
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
             return "redirect:/carrito";
         }
     }
 
-    @GetMapping("/carrito/pedido-confirmado/{pedidoId}")
-    public String pedidoConfirmado(
+    @GetMapping("/pedido-confirmado/{pedidoId}")
+    public String verPedidoConfirmado(
             @PathVariable Long pedidoId,
             Authentication authentication,
-            Model model
+            Model model,
+            RedirectAttributes redirectAttributes
     ) {
-        PedidoResumenDTO pedido = pedidoService.obtenerResumenPedido(pedidoId, authentication.getName());
+        try {
+            PedidoResumenDTO pedido = pedidoService.obtenerResumenPedido(pedidoId, authentication.getName());
 
-        model.addAttribute("titulo", "Pedido confirmado");
-        model.addAttribute("usuario", authentication.getName());
-        model.addAttribute("pedido", pedido);
+            model.addAttribute("titulo", "Pedido confirmado");
+            model.addAttribute("pedido", pedido);
 
-        return "pedido-confirmado";
+            return "pedido-confirmado";
+
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            return "redirect:/mis-pedidos";
+        }
     }
 }

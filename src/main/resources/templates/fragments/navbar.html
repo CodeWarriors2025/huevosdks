@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dks" th:fragment="navbar">
+    <div class="container">
+        <a class="navbar-brand d-flex align-items-center gap-2" href="/">
+            <img src="/img/logo-huevos-dks.png"
+                 alt="HUEVOS DKS"
+                 class="logo-navbar">
+            <span>HUEVOS DKS</span>
+        </a>
+
+        <button class="navbar-toggler bg-light"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarDks"
+                aria-controls="navbarDks"
+                aria-expanded="false"
+                aria-label="Abrir menú">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarDks">
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0 gap-lg-1">
+
+                <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                    <a class="nav-link text-white" href="/admin">Panel</a>
+                </li>
+
+                <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                    <a class="nav-link text-white" href="/admin/pedidos">Pedidos</a>
+                </li>
+
+                <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                    <a class="nav-link text-white" href="/admin/productos">Productos</a>
+                </li>
+
+                <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                    <a class="nav-link text-white" href="/admin/usuarios">Usuarios</a>
+                </li>
+
+                <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                    <a class="nav-link text-white" href="/admin/reportes">Reportes</a>
+                </li>
+
+                <li class="nav-item" sec:authorize="hasRole('CLIENTE')">
+                    <a class="nav-link text-white" href="/catalogo">Catálogo</a>
+                </li>
+
+                <li class="nav-item" sec:authorize="hasRole('CLIENTE')">
+                    <a class="nav-link text-white" href="/carrito">Carrito</a>
+                </li>
+
+                <li class="nav-item" sec:authorize="hasRole('CLIENTE')">
+                    <a class="nav-link text-white" href="/mis-pedidos">Mis pedidos</a>
+                </li>
+
+                <li class="nav-item" sec:authorize="hasRole('OPERADOR')">
+                    <a class="nav-link text-white" href="/operador/pedidos">Pedidos en ruta</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="/perfil">Mi perfil</a>
+                </li>
+
+                <li class="nav-item d-flex align-items-center ms-lg-2">
+                    <span class="text-white small">
+                        Usuario:
+                        <strong sec:authentication="name">usuario</strong>
+                    </span>
+                </li>
+
+                <li class="nav-item ms-lg-2">
+                    <form th:action="@{/logout}" method="post" class="m-0">
+                        <button type="submit" class="btn btn-outline-light btn-sm">
+                            Salir
+                        </button>
+                    </form>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+</nav>
+
+</body>
+</html>

@@ -30,6 +30,10 @@
             font-weight: 800;
         }
 
+        .nav-link:hover {
+            color: var(--dks-amarillo) !important;
+        }
+
         .logo-navbar {
             height: 42px;
             width: auto;
@@ -73,37 +77,7 @@
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-dks">
-    <div class="container">
-        <a class="navbar-brand d-flex align-items-center gap-2" href="/admin">
-            <img src="/img/logo-huevos-dks.png"
-                 alt="HUEVOS DKS"
-                 class="logo-navbar">
-            <span>HUEVOS DKS | Admin</span>
-        </a>
-
-        <div class="ms-auto d-flex align-items-center gap-2">
-            <a href="/admin" class="btn btn-outline-light btn-sm">
-                Panel
-            </a>
-
-            <a href="/admin/pedidos" class="btn btn-outline-light btn-sm">
-                Pedidos
-            </a>
-
-            <span class="text-white small d-none d-md-inline ms-2">
-                Admin:
-                <strong sec:authentication="name">usuario</strong>
-            </span>
-
-            <form th:action="@{/logout}" method="post" class="m-0">
-                <button type="submit" class="btn btn-outline-light btn-sm">
-                    Salir
-                </button>
-            </form>
-        </div>
-    </div>
-</nav>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
 
 <main class="container py-4">
 
@@ -177,8 +151,10 @@
                             </strong>
                         </td>
 
-                        <td th:text="${producto.cantidadDisponible}">
-                            0
+                        <td>
+                            <strong th:text="${producto.cantidadDisponible}">
+                                0
+                            </strong>
                         </td>
 
                         <td>
@@ -191,7 +167,7 @@
                         </td>
 
                         <td class="text-end">
-                            <div class="d-flex justify-content-end gap-2 flex-wrap">
+                            <div class="d-flex gap-2 justify-content-end flex-wrap">
                                 <a th:href="@{/admin/productos/{id}/editar(id=${producto.id})}"
                                    class="btn btn-outline-dks btn-sm">
                                     Editar
@@ -201,7 +177,7 @@
                                       th:action="@{/admin/productos/{id}/cambiar-estado(id=${producto.id})}"
                                       method="post">
                                     <input type="hidden" name="activo" value="false">
-                                    <button type="submit" class="btn btn-outline-secondary btn-sm">
+                                    <button type="submit" class="btn btn-outline-danger btn-sm">
                                         Desactivar
                                     </button>
                                 </form>
@@ -220,6 +196,10 @@
                     </tbody>
                 </table>
             </div>
+
+            <small class="text-muted">
+                Los productos inactivos no aparecen en el catálogo del cliente.
+            </small>
         </div>
     </section>
 

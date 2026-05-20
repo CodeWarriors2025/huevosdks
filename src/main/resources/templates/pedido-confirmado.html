@@ -30,21 +30,25 @@
             font-weight: 800;
         }
 
+        .nav-link:hover {
+            color: var(--dks-amarillo) !important;
+        }
+
         .logo-navbar {
             height: 42px;
             width: auto;
             object-fit: contain;
         }
 
+        .titulo-seccion {
+            color: var(--dks-azul-oscuro);
+            font-weight: 800;
+        }
+
         .card-confirmacion {
             border: none;
             border-radius: 18px;
             box-shadow: 0 4px 16px rgba(0, 0, 0, 0.10);
-        }
-
-        .titulo-seccion {
-            color: var(--dks-azul-oscuro);
-            font-weight: 800;
         }
 
         .btn-dks {
@@ -59,110 +63,106 @@
             color: #ffffff;
         }
 
-        .total-pedido {
+        .btn-outline-dks {
+            border: 1px solid var(--dks-azul-oscuro);
             color: var(--dks-azul-oscuro);
-            font-weight: 800;
-            font-size: 1.5rem;
+            font-weight: 600;
         }
 
-        .icono-ok {
-            width: 76px;
-            height: 76px;
-            border-radius: 50%;
-            background-color: #d1e7dd;
-            color: #0f5132;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 38px;
-            margin: 0 auto 18px auto;
+        .btn-outline-dks:hover {
+            background-color: var(--dks-azul-oscuro);
+            color: #ffffff;
+        }
+
+        .numero-pedido {
+            color: var(--dks-azul-oscuro);
+            font-size: 2rem;
+            font-weight: 800;
+        }
+
+        .total {
+            color: var(--dks-azul-oscuro);
+            font-size: 1.5rem;
+            font-weight: 800;
         }
     </style>
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-dks">
-    <div class="container">
-        <a class="navbar-brand d-flex align-items-center gap-2" href="/catalogo">
-            <img src="/img/logo-huevos-dks.png"
-                 alt="HUEVOS DKS"
-                 class="logo-navbar">
-            <span>HUEVOS DKS</span>
-        </a>
-
-        <div class="ms-auto d-flex align-items-center gap-3">
-            <a href="/catalogo" class="btn btn-dks btn-sm">
-                Volver al catálogo
-            </a>
-
-            <span class="text-white small d-none d-md-inline">
-                Cliente:
-                <strong sec:authentication="name">usuario</strong>
-            </span>
-
-            <form th:action="@{/logout}" method="post" class="m-0">
-                <button type="submit" class="btn btn-outline-light btn-sm">
-                    Salir
-                </button>
-            </form>
-        </div>
-    </div>
-</nav>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
 
 <main class="container py-4">
 
+    <section class="mb-4">
+        <h2 class="titulo-seccion mb-1">Pedido confirmado</h2>
+        <p class="text-muted mb-0">
+            Tu pedido fue registrado correctamente.
+        </p>
+    </section>
+
+    <div th:if="${mensaje}" class="alert alert-success" th:text="${mensaje}">
+        Pedido creado correctamente.
+    </div>
+
     <section class="card card-confirmacion">
-        <div class="card-body p-4">
+        <div class="card-body">
             <div class="text-center mb-4">
-                <div class="icono-ok">
-                    ✓
-                </div>
-
-                <h2 class="titulo-seccion mb-1">
-                    Pedido creado correctamente
-                </h2>
-
+                <div class="display-5 mb-2">✅</div>
+                <h3 class="fw-bold">Gracias por tu compra</h3>
                 <p class="text-muted mb-0">
-                    Tu pedido quedó registrado y está pendiente de gestión.
+                    Hemos recibido tu pedido y será gestionado por el administrador.
                 </p>
             </div>
 
+            <hr>
+
             <div class="row g-3 mb-4">
-                <div class="col-12 col-md-6">
-                    <strong>Número de pedido:</strong>
-                    <p class="mb-0" th:text="${pedido.id}">1</p>
+                <div class="col-12 col-md-3">
+                    <small class="text-muted">Número de pedido</small>
+                    <div class="numero-pedido">
+                        #<span th:text="${pedido.id}">1</span>
+                    </div>
                 </div>
 
-                <div class="col-12 col-md-6">
-                    <strong>Fecha:</strong>
-                    <p class="mb-0" th:text="${pedido.fechaPedidoFormateada}">
-                        19/05/2026 16:40
+                <div class="col-12 col-md-3">
+                    <small class="text-muted">Fecha</small>
+                    <p class="fw-semibold mb-0" th:text="${pedido.fechaPedidoFormateada}">
+                        19/05/2026 18:00
                     </p>
                 </div>
 
-                <div class="col-12 col-md-6">
-                    <strong>Estado:</strong>
-                    <p class="mb-0" th:text="${pedido.estado}">
-                        PENDIENTE
+                <div class="col-12 col-md-3">
+                    <small class="text-muted">Estado</small>
+                    <p class="fw-semibold mb-0">
+                        <span class="badge bg-warning text-dark" th:text="${pedido.estado}">
+                            PENDIENTE
+                        </span>
                     </p>
                 </div>
 
-                <div class="col-12 col-md-6">
-                    <strong>Método de pago:</strong>
-                    <p class="mb-0" th:text="${pedido.metodoPago}">
+                <div class="col-12 col-md-3">
+                    <small class="text-muted">Método de pago</small>
+                    <p class="fw-semibold mb-0" th:text="${pedido.metodoPago}">
                         EFECTIVO
-                    </p>
-                </div>
-
-                <div class="col-12">
-                    <strong>Dirección de entrega:</strong>
-                    <p class="mb-0" th:text="${pedido.direccionEntrega}">
-                        Dirección
                     </p>
                 </div>
             </div>
 
-            <div class="table-responsive">
+            <div class="mb-4">
+                <small class="text-muted">Dirección de entrega</small>
+                <p class="fw-semibold mb-0" th:text="${pedido.direccionEntrega}">
+                    Dirección de entrega
+                </p>
+            </div>
+
+            <div th:if="${pedido.observaciones != null and !pedido.observaciones.isBlank()}" class="mb-4">
+                <small class="text-muted">Observaciones</small>
+                <p class="fw-semibold mb-0" th:text="${pedido.observaciones}">
+                    Observaciones
+                </p>
+            </div>
+
+            <div class="table-responsive mb-4">
                 <table class="table align-middle">
                     <thead>
                     <tr>
@@ -172,20 +172,24 @@
                         <th>Subtotal</th>
                     </tr>
                     </thead>
+
                     <tbody>
                     <tr th:each="detalle : ${pedido.detalles}">
                         <td th:text="${detalle.productoNombre}">
                             Producto
                         </td>
+
                         <td th:text="${detalle.cantidad}">
                             1
                         </td>
+
                         <td th:text="${detalle.precioUnitarioFormateado}">
-                            $ 18.000
+                            $ 0
                         </td>
+
                         <td>
                             <strong th:text="${detalle.subtotalFormateado}">
-                                $ 18.000
+                                $ 0
                             </strong>
                         </td>
                     </tr>
@@ -193,19 +197,23 @@
                 </table>
             </div>
 
-            <hr>
-
             <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
                 <div>
-                    <span class="text-muted">Total del pedido</span>
-                    <p class="total-pedido mb-0" th:text="${pedido.totalFormateado}">
+                    <small class="text-muted">Total del pedido</small>
+                    <div class="total" th:text="${pedido.totalFormateado}">
                         $ 0
-                    </p>
+                    </div>
                 </div>
 
-                <a href="/catalogo" class="btn btn-dks">
-                    Hacer otro pedido
-                </a>
+                <div class="d-flex gap-2 flex-wrap">
+                    <a href="/catalogo" class="btn btn-outline-dks">
+                        Seguir comprando
+                    </a>
+
+                    <a href="/mis-pedidos" class="btn btn-dks">
+                        Ver mis pedidos
+                    </a>
+                </div>
             </div>
         </div>
     </section>

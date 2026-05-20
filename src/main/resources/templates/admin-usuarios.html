@@ -78,49 +78,21 @@
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-dks">
-    <div class="container">
-        <a class="navbar-brand d-flex align-items-center gap-2" href="/admin">
-            <img src="/img/logo-huevos-dks.png"
-                 alt="HUEVOS DKS"
-                 class="logo-navbar">
-            <span>HUEVOS DKS | Admin</span>
-        </a>
-
-        <div class="ms-auto d-flex align-items-center gap-2 flex-wrap justify-content-end">
-            <a href="/admin" class="btn btn-outline-light btn-sm">
-                Panel
-            </a>
-
-            <a href="/admin/pedidos" class="btn btn-outline-light btn-sm">
-                Pedidos
-            </a>
-
-            <a href="/admin/productos" class="btn btn-outline-light btn-sm">
-                Productos
-            </a>
-
-            <span class="text-white small d-none d-md-inline ms-2">
-                Admin:
-                <strong sec:authentication="name">usuario</strong>
-            </span>
-
-            <form th:action="@{/logout}" method="post" class="m-0">
-                <button type="submit" class="btn btn-outline-light btn-sm">
-                    Salir
-                </button>
-            </form>
-        </div>
-    </div>
-</nav>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
 
 <main class="container py-4">
 
-    <section class="mb-4">
-        <h2 class="titulo-seccion mb-1">Usuarios y clientes</h2>
-        <p class="text-muted mb-0">
-            Consulta usuarios del sistema, roles, estado de acceso y clientes registrados.
-        </p>
+    <section class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+        <div>
+            <h2 class="titulo-seccion mb-1">Usuarios y clientes</h2>
+            <p class="text-muted mb-0">
+                Consulta usuarios del sistema, roles, estado de acceso y clientes registrados.
+            </p>
+        </div>
+
+        <a href="/admin/usuarios/nuevo-operador" class="btn btn-dks">
+            Nuevo operador
+        </a>
     </section>
 
     <div th:if="${mensaje}" class="alert alert-success" th:text="${mensaje}">
@@ -239,7 +211,7 @@
             </div>
 
             <small class="text-muted">
-                Un usuario inactivo no podrá iniciar sesión en el sistema.
+                El registro público solo crea clientes. Los operadores se crean desde el botón Nuevo operador.
             </small>
         </div>
     </section>

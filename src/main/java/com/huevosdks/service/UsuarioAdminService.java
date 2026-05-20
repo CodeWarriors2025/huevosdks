@@ -1,14 +1,17 @@
 package com.huevosdks.service;
 
 import com.huevosdks.dto.ClienteAdminDTO;
+import com.huevosdks.dto.OperadorAdminFormDTO;
 import com.huevosdks.dto.UsuarioAdminDTO;
 import com.huevosdks.entity.Cliente;
 import com.huevosdks.entity.Usuario;
 import com.huevosdks.repository.ClienteRepository;
 import com.huevosdks.repository.UsuarioRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -16,13 +19,16 @@ public class UsuarioAdminService {
 
     private final UsuarioRepository usuarioRepository;
     private final ClienteRepository clienteRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public UsuarioAdminService(
             UsuarioRepository usuarioRepository,
-            ClienteRepository clienteRepository
+            ClienteRepository clienteRepository,
+            PasswordEncoder passwordEncoder
     ) {
         this.usuarioRepository = usuarioRepository;
         this.clienteRepository = clienteRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional(readOnly = true)
@@ -56,6 +62,25 @@ public class UsuarioAdminService {
                 .stream()
                 .map(this::convertirClienteADTO)
                 .toList();
+    }
+
+    @Transactional
+    public void crearOperador(OperadorAdminFormDTO operadorForm) {
+        String telefono = operadorForm.getTelefono().trim();
+
+        if (usuarioRepository.existsByTelefono(telefono)) {
+            throw new IllegalArgumentException("Ya existe un usuario con ese teléfono.");
+        }
+
+        Usuario usuario = new Usuario();
+        usuario.setNombre(operadorForm.getNombre().trim());
+        usuario.setTelefono(telefono);
+        usuario.setContrasenia(passwordEncoder.encode(operadorForm.getContrasenia()));
+        usuario.setRol(Usuario.Rol.OPERADOR);
+        usuario.setActivo(operadorForm.isActivo());
+        usuario.setFechaCreacion(LocalDateTime.now());
+
+        usuarioRepository.save(usuario);
     }
 
     @Transactional

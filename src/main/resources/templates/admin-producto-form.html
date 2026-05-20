@@ -30,6 +30,10 @@
             font-weight: 800;
         }
 
+        .nav-link:hover {
+            color: var(--dks-amarillo) !important;
+        }
+
         .logo-navbar {
             height: 42px;
             width: auto;
@@ -79,42 +83,18 @@
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-dks">
-    <div class="container">
-        <a class="navbar-brand d-flex align-items-center gap-2" href="/admin">
-            <img src="/img/logo-huevos-dks.png"
-                 alt="HUEVOS DKS"
-                 class="logo-navbar">
-            <span>HUEVOS DKS | Admin</span>
-        </a>
-
-        <div class="ms-auto d-flex align-items-center gap-2">
-            <a href="/admin/productos" class="btn btn-outline-light btn-sm">
-                Productos
-            </a>
-
-            <a href="/admin/pedidos" class="btn btn-outline-light btn-sm">
-                Pedidos
-            </a>
-
-            <form th:action="@{/logout}" method="post" class="m-0">
-                <button type="submit" class="btn btn-outline-light btn-sm">
-                    Salir
-                </button>
-            </form>
-        </div>
-    </div>
-</nav>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
 
 <main class="container py-4">
 
     <section class="mb-4">
         <h2 class="titulo-seccion mb-1"
-            th:text="${modo == 'CREAR'} ? 'Crear producto' : 'Editar producto'">
+            th:text="${modo == 'EDITAR'} ? 'Editar producto' : 'Crear producto'">
             Crear producto
         </h2>
+
         <p class="text-muted mb-0">
-            Registra la información comercial y el inventario disponible.
+            Registra o actualiza la información comercial del producto y su inventario disponible.
         </p>
     </section>
 
@@ -124,18 +104,21 @@
 
     <section class="card card-admin">
         <div class="card-body">
-            <form th:action="${modo == 'CREAR'} ? @{/admin/productos/nuevo} : @{/admin/productos/{id}/editar(id=${productoId})}"
+            <form th:action="${modo == 'EDITAR'} ? @{/admin/productos/{id}/editar(id=${productoId})} : @{/admin/productos/nuevo}"
                   th:object="${productoForm}"
                   method="post">
 
                 <div class="row g-3">
+
                     <div class="col-12 col-md-6">
-                        <label for="nombre" class="form-label fw-semibold">Nombre</label>
+                        <label for="nombre" class="form-label fw-semibold">
+                            Nombre
+                        </label>
                         <input type="text"
                                id="nombre"
                                th:field="*{nombre}"
                                class="form-control"
-                               placeholder="Ej: Cubeta AA x30">
+                               placeholder="Ej: Cubeta de huevos AA">
                         <div class="error-campo"
                              th:if="${#fields.hasErrors('nombre')}"
                              th:errors="*{nombre}">
@@ -144,8 +127,12 @@
                     </div>
 
                     <div class="col-12 col-md-6">
-                        <label for="tipo" class="form-label fw-semibold">Tipo</label>
-                        <select id="tipo" th:field="*{tipo}" class="form-select">
+                        <label for="tipo" class="form-label fw-semibold">
+                            Tipo
+                        </label>
+                        <select id="tipo"
+                                th:field="*{tipo}"
+                                class="form-select">
                             <option value="">Seleccione un tipo</option>
                             <option th:each="tipoItem : ${tipos}"
                                     th:value="${tipoItem.name()}"
@@ -161,12 +148,14 @@
                     </div>
 
                     <div class="col-12">
-                        <label for="descripcion" class="form-label fw-semibold">Descripción</label>
+                        <label for="descripcion" class="form-label fw-semibold">
+                            Descripción
+                        </label>
                         <textarea id="descripcion"
                                   th:field="*{descripcion}"
                                   class="form-control"
                                   rows="3"
-                                  placeholder="Descripción del producto"></textarea>
+                                  placeholder="Descripción corta del producto"></textarea>
                         <div class="error-campo"
                              th:if="${#fields.hasErrors('descripcion')}"
                              th:errors="*{descripcion}">
@@ -175,7 +164,9 @@
                     </div>
 
                     <div class="col-12 col-md-4">
-                        <label for="precioUnitario" class="form-label fw-semibold">Precio unitario</label>
+                        <label for="precioUnitario" class="form-label fw-semibold">
+                            Precio unitario
+                        </label>
                         <input type="number"
                                id="precioUnitario"
                                th:field="*{precioUnitario}"
@@ -198,7 +189,8 @@
                                id="unidadesPorPresentacion"
                                th:field="*{unidadesPorPresentacion}"
                                class="form-control"
-                               min="1">
+                               min="1"
+                               placeholder="30">
                         <div class="error-campo"
                              th:if="${#fields.hasErrors('unidadesPorPresentacion')}"
                              th:errors="*{unidadesPorPresentacion}">
@@ -214,7 +206,8 @@
                                id="cantidadDisponible"
                                th:field="*{cantidadDisponible}"
                                class="form-control"
-                               min="0">
+                               min="0"
+                               placeholder="10">
                         <div class="error-campo"
                              th:if="${#fields.hasErrors('cantidadDisponible')}"
                              th:errors="*{cantidadDisponible}">
@@ -237,13 +230,17 @@
 
                 <hr>
 
-                <div class="d-flex gap-2">
+                <div class="d-flex gap-2 flex-wrap">
                     <button type="submit" class="btn btn-dks">
                         Guardar producto
                     </button>
 
                     <a href="/admin/productos" class="btn btn-outline-dks">
                         Cancelar
+                    </a>
+
+                    <a href="/admin" class="btn btn-outline-secondary">
+                        Volver al panel
                     </a>
                 </div>
             </form>

@@ -1,10 +1,13 @@
 package com.huevosdks.controller;
 
+import com.huevosdks.dto.OperadorAdminFormDTO;
 import com.huevosdks.entity.Usuario;
 import com.huevosdks.service.UsuarioAdminService;
+import jakarta.validation.Valid;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -34,6 +37,40 @@ public class AdminUsuarioController {
         model.addAttribute("rolSeleccionado", rol);
 
         return "admin-usuarios";
+    }
+
+    @GetMapping("/admin/usuarios/nuevo-operador")
+    public String mostrarFormularioNuevoOperador(Model model) {
+        OperadorAdminFormDTO operadorForm = new OperadorAdminFormDTO();
+        operadorForm.setActivo(true);
+
+        model.addAttribute("titulo", "Nuevo operador");
+        model.addAttribute("operadorForm", operadorForm);
+
+        return "admin-operador-form";
+    }
+
+    @PostMapping("/admin/usuarios/nuevo-operador")
+    public String crearOperador(
+            @Valid OperadorAdminFormDTO operadorForm,
+            BindingResult resultado,
+            Model model,
+            RedirectAttributes redirectAttributes
+    ) {
+        if (resultado.hasErrors()) {
+            model.addAttribute("titulo", "Nuevo operador");
+            return "admin-operador-form";
+        }
+
+        try {
+            usuarioAdminService.crearOperador(operadorForm);
+            redirectAttributes.addFlashAttribute("mensaje", "Operador creado correctamente.");
+            return "redirect:/admin/usuarios?rol=OPERADOR";
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("titulo", "Nuevo operador");
+            model.addAttribute("error", e.getMessage());
+            return "admin-operador-form";
+        }
     }
 
     @PostMapping("/admin/usuarios/{usuarioId}/cambiar-estado")

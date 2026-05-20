@@ -3,7 +3,7 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
-    <title>Admin pedidos | HUEVOS DKS</title>
+    <title>Gestión de pedidos | HUEVOS DKS</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link rel="stylesheet"
@@ -28,6 +28,10 @@
         .navbar-brand span {
             color: var(--dks-amarillo);
             font-weight: 800;
+        }
+
+        .nav-link:hover {
+            color: var(--dks-amarillo) !important;
         }
 
         .logo-navbar {
@@ -70,50 +74,15 @@
             color: #ffffff;
         }
 
-        .badge-pendiente {
-            background-color: #ffc107;
-            color: #1b3a6b;
-        }
-
-        .badge-ruta {
-            background-color: #0dcaf0;
-            color: #1b3a6b;
-        }
-
-        .badge-entregado {
-            background-color: #198754;
-        }
-
-        .badge-cancelado {
-            background-color: #dc3545;
+        .direccion {
+            max-width: 360px;
+            white-space: normal;
         }
     </style>
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-dks">
-    <div class="container">
-        <a class="navbar-brand d-flex align-items-center gap-2" href="/admin/pedidos">
-            <img src="/img/logo-huevos-dks.png"
-                 alt="HUEVOS DKS"
-                 class="logo-navbar">
-            <span>HUEVOS DKS | Admin</span>
-        </a>
-
-        <div class="ms-auto d-flex align-items-center gap-3">
-            <span class="text-white small d-none d-md-inline">
-                Admin:
-                <strong sec:authentication="name">usuario</strong>
-            </span>
-
-            <form th:action="@{/logout}" method="post" class="m-0">
-                <button type="submit" class="btn btn-outline-light btn-sm">
-                    Salir
-                </button>
-            </form>
-        </div>
-    </div>
-</nav>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
 
 <main class="container py-4">
 
@@ -187,7 +156,7 @@
                         <th>Estado actual</th>
                         <th>Unidades</th>
                         <th>Total</th>
-                        <th style="width: 260px;">Cambiar estado</th>
+                        <th>Cambiar estado</th>
                     </tr>
                     </thead>
 
@@ -198,7 +167,7 @@
                         </td>
 
                         <td th:text="${pedido.fechaPedidoFormateada}">
-                            19/05/2026 16:40
+                            19/05/2026 18:00
                         </td>
 
                         <td th:text="${pedido.clienteNombre}">
@@ -210,28 +179,8 @@
                         </td>
 
                         <td>
-                            <span th:if="${pedido.estado == 'PENDIENTE'}"
-                                  class="badge badge-pendiente"
-                                  th:text="${pedido.estado}">
+                            <span class="badge bg-primary" th:text="${pedido.estado}">
                                 PENDIENTE
-                            </span>
-
-                            <span th:if="${pedido.estado == 'EN_RUTA'}"
-                                  class="badge badge-ruta"
-                                  th:text="${pedido.estado}">
-                                EN_RUTA
-                            </span>
-
-                            <span th:if="${pedido.estado == 'ENTREGADO'}"
-                                  class="badge badge-entregado"
-                                  th:text="${pedido.estado}">
-                                ENTREGADO
-                            </span>
-
-                            <span th:if="${pedido.estado == 'CANCELADO'}"
-                                  class="badge badge-cancelado"
-                                  th:text="${pedido.estado}">
-                                CANCELADO
                             </span>
                         </td>
 
@@ -246,15 +195,14 @@
                         </td>
 
                         <td>
-                            <form th:action="@{/admin/pedidos/cambiar-estado}" method="post"
-                                  class="d-flex gap-2">
+                            <form th:action="@{/admin/pedidos/cambiar-estado}" method="post" class="d-flex gap-2">
                                 <input type="hidden" name="pedidoId" th:value="${pedido.id}">
 
                                 <select name="estado" class="form-select form-select-sm">
                                     <option th:each="estadoItem : ${estados}"
                                             th:value="${estadoItem.name()}"
                                             th:text="${estadoItem.name()}"
-                                            th:selected="${pedido.estado == estadoItem.name()}">
+                                            th:selected="${estadoItem.name() == pedido.estado}">
                                         PENDIENTE
                                     </option>
                                 </select>
@@ -268,6 +216,10 @@
                     </tbody>
                 </table>
             </div>
+
+            <small class="text-muted">
+                Cuando un pedido pasa a EN_RUTA, aparecerá en el panel del operador.
+            </small>
         </div>
     </section>
 
